@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 config();
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import { connectDB } from "./config/db";
 import Folder from "./models/Folder";
@@ -14,20 +14,26 @@ app.use(
   })
 );
 
-app.get("/api/folders", async (req, res) => {
+app.get("/", async(req: Request, res: Response) => {
+  res.status(200).json({ message: "Backend for Hashed Tokens Assignment 2" })
+})
+
+app.get("/api/folders", async (req: Request, res:Response) => {
   try {
     const rootFolders = await Folder.find({});
-    res.json(rootFolders);
+    res.status(200).json(rootFolders);
   } catch (err) {
     console.log(err);
   }
 });
 
-app.listen(process.env.PORT, () => {
+const PORT = process.env.PORT || 8000
+
+app.listen(PORT, () => {
   connectDB()
     .then(() => {
       console.log("Database connected successfully...");
-      console.log(`Server is running on ${process.env.PORT}...`);
+      console.log(`Server is running on ${PORT}...`);
     })
     .catch(() => {
       console.log("Database connection failed...");
